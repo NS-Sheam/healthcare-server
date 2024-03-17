@@ -4,22 +4,15 @@ const prisma = new PrismaClient();
 
 const getAllAdminFromDB = async (params: any) => {
   const andCondition: Prisma.AdminWhereInput[] = [];
+  const adminSearchableFields = ["name", "email"];
   if (params?.searchTerm) {
     andCondition.push({
-      OR: [
-        {
-          name: {
-            contains: params.searchTerm,
-            mode: "insensitive",
-          },
+      OR: adminSearchableFields.map((field) => ({
+        [field]: {
+          contains: params.searchTerm,
+          mode: "insensitive",
         },
-        {
-          email: {
-            contains: params.searchTerm,
-            mode: "insensitive",
-          },
-        },
-      ],
+      })),
     });
   }
   const whereCondition: Prisma.AdminWhereInput = { AND: andCondition };
