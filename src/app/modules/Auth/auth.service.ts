@@ -1,6 +1,5 @@
 import prisma from "../../../shared/prisma";
 import * as bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
 
 const loginUser = async (payload: { email: string; password: string }) => {
@@ -36,6 +35,11 @@ const loginUser = async (payload: { email: string; password: string }) => {
   };
 };
 
+const refreshToken = async (token: string) => {
+  console.log(token);
+};
+
 export const AuthServices = {
   loginUser,
+  refreshToken,
 };

@@ -5,9 +5,11 @@ import router from "./app/routes";
 import httpStatus from "http-status";
 import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 import notFound from "./app/middlewares/notFound";
+import cookieParser from "cookie-parser";
 
 const app: Application = express();
 app.use(cors());
+app.use(cookieParser());
 
 // parser
 app.use(express.json());
