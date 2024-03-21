@@ -29,10 +29,7 @@ const refreshToken = catchAsync(async (req: Request, res: Response) => {
     status: 200,
     success: true,
     message: "Refresh token generated successfully",
-    // data: {
-    //   accessToken: result.accessToken,
-    //   needpasswordChange: result.needPasswordChange,
-    // },
+    data: result,
   });
 });
 
