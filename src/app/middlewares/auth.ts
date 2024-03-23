@@ -15,6 +15,7 @@ const auth = (...roles: string[]) => {
       }
 
       const verifiedUser = jwtHelpers.verifyToken(token, config.jwt.jwt_secret as Secret);
+      req.user = verifiedUser;
       if (roles.length && !roles.includes(verifiedUser.role)) {
         throw new ApiError(httpStatus.FORBIDDEN, "You are not authorized");
       }

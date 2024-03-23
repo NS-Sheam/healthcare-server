@@ -67,7 +67,21 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const changePassword = async (user: any, payload: any) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      email: user.email,
+      status: UserStatus.ACTIVE,
+    },
+  });
+  const isCorrectPassword: boolean = await bcrypt.compare(payload.password, userData.password);
+  if (!isCorrectPassword) {
+    throw new Error("Invalid email or password");
+  }
+};
+
 export const AuthServices = {
   loginUser,
   refreshToken,
+  changePassword,
 };
