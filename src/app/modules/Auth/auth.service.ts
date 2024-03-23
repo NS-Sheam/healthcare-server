@@ -14,7 +14,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
   });
   const isCorrectPassword: boolean = await bcrypt.compare(payload.password, userData.password);
   if (!isCorrectPassword) {
-    throw new Error("Invalid email or password");
+    throw new Error("Password is incorrect");
   }
   const accessToken = jwtHelpers.generateToken(
     {
@@ -74,10 +74,23 @@ const changePassword = async (user: any, payload: any) => {
       status: UserStatus.ACTIVE,
     },
   });
-  const isCorrectPassword: boolean = await bcrypt.compare(payload.password, userData.password);
+  const isCorrectPassword: boolean = await bcrypt.compare(payload.oldPassword, userData.password);
   if (!isCorrectPassword) {
-    throw new Error("Invalid email or password");
+    throw new Error("Password is incorrect");
   }
+  const hashedPassword: string = await bcrypt.hash(payload.newPassword, 12);
+  await prisma.user.update({
+    where: {
+      email: user.email,
+    },
+    data: {
+      password: hashedPassword,
+      needPasswordChange: false,
+    },
+  });
+  return {
+    message: "Password changed successfully",
+  };
 };
 
 export const AuthServices = {
