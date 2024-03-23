@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 import config from "../../../config";
 
-const emailSender = async () => {
+const emailSender = async (email: string, html: string) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -10,6 +10,9 @@ const emailSender = async () => {
       user: config.emailSender.email,
       pass: config.emailSender.app_password,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
 
   // async..await is not allowed in global scope, must use a wrapper
@@ -17,10 +20,10 @@ const emailSender = async () => {
   // send mail with defined transport object
   const info = await transporter.sendMail({
     from: '"Health Care" <123sheamfeni@gmail.com>', // sender address
-    to: "bar@example.com, baz@example.com", // list of receivers
-    subject: "Hello ✔", // Subject line
-    text: "Hello world?", // plain text body
-    html: "<b>Hello world?</b>", // html body
+    to: email, // list of receivers
+    subject: "Reset Password Link", // Subject line
+    // text: "Hello world?", // plain text body
+    html: html, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
