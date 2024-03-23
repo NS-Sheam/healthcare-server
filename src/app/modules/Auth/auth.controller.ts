@@ -42,8 +42,18 @@ const changePassword = catchAsync(async (req: Request & { user?: any }, res: Res
   });
 });
 
+const forgotPassword = catchAsync(async (req: Request, res: Response) => {
+  const result = await AuthServices.forgotPassword(req.body);
+  sendResponse(res, {
+    status: 200,
+    success: true,
+    message: "Password reset link sent successfully",
+    data: result,
+  });
+});
 export const AuthController = {
   loginUser,
   refreshToken,
   changePassword,
+  forgotPassword,
 };
