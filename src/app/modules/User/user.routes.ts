@@ -6,6 +6,7 @@ import auth from "../../middlewares/auth";
 
 import { fileUploader } from "../../../helpers/fileUploader";
 import { userValidation } from "./user.validation";
+import validateRequest from "../../middlewares/validateRequest";
 const router = express.Router();
 
 router.get("/", auth(UserRole.ADMIN, UserRole.SUPER_ADMIN), userController.getAllUserFromDB);
@@ -37,6 +38,14 @@ router.post(
   }
 );
 
-router.patch("/:id/status", userController.changeProfileStatus);
+router.patch(
+  "/:id/status",
+  auth(UserRole.ADMIN, UserRole.SUPER_ADMIN),
+  (req: Request, res: Response, next: NextFunction) => {
+    req.body = userValidation.updateUserStatus.parse(req.body);
+    next();
+  },
+  userController.changeProfileStatus
+);
 
 export const userRoutes = router;

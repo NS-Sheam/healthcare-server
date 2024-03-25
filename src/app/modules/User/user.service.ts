@@ -161,8 +161,8 @@ const getAllUserFromDB = async (params: any, options: IPaginationOptions) => {
   };
 };
 
-const changeProfileStatus = async (id: string, data: { status: UserRole }) => {
-  const userData = await prisma.user.findUniqueOrThrow({
+const changeProfileStatus = async (id: string, status: UserRole) => {
+  await prisma.user.findUniqueOrThrow({
     where: {
       id,
     },
@@ -172,10 +172,10 @@ const changeProfileStatus = async (id: string, data: { status: UserRole }) => {
     where: {
       id,
     },
-    data: {
-      status: data.status,
-    },
+    data: status,
   });
+
+  return updateUser;
 };
 
 export const userService = {
