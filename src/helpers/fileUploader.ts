@@ -1,7 +1,7 @@
 import multer from "multer";
 import path from "path";
 import { v2 as cloudinary } from "cloudinary";
-
+import fs from "fs";
 cloudinary.config({
   cloud_name: "duuwqmunp",
   api_key: "567245281242557",
@@ -21,6 +21,7 @@ const upload = multer({ storage: storage });
 const uploadToCloudinary = async (file: Express.Multer.File) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(file.path, { public_id: file.originalname }, (error, result) => {
+      fs.unlinkSync(file.path);
       if (error) {
         reject(error);
       }
