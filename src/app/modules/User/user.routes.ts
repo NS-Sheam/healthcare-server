@@ -37,4 +37,6 @@ router.post(
   }
 );
 
+router.patch("/:id/status", userController.changeProfileStatus);
+
 export const userRoutes = router;
