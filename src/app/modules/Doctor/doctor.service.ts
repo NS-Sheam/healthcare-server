@@ -64,7 +64,7 @@ const getAllDoctorFromDB = async (param: IDoctorFilterRequest, options: IPaginat
 };
 
 const getByIdFromDB = async (id: string) => {
-  const result = await prisma.doctor.findUnique({
+  const result = await prisma.doctor.findUniqueOrThrow({
     where: {
       id,
       isDeleted: false,
@@ -134,7 +134,7 @@ const updateDoctor = async (id: string, payload: any) => {
 };
 
 const deleteFromDB = async (id: string): Promise<Doctor | null> => {
-  await prisma.doctor.findUniqueOrThrow({
+  const d = await prisma.doctor.findUniqueOrThrow({
     where: {
       id,
     },
@@ -144,6 +144,12 @@ const deleteFromDB = async (id: string): Promise<Doctor | null> => {
     const doctorDeletedData = await transactionClient.doctor.delete({
       where: {
         id,
+      },
+    });
+
+    await transactionClient.user.delete({
+      where: {
+        email: doctorDeletedData.email,
       },
     });
     return doctorDeletedData;
