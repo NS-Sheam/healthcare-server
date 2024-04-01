@@ -10,4 +10,7 @@ router.post("/", fileUploader.upload.single("file"), (req: Request, res: Respons
   return SpecialtiesController.insertSpecialtiesIntoDB(req, res, next);
 });
 
+router.get("/:id", SpecialtiesController.getSpecialtyById);
+router.get("/", SpecialtiesController.getAllSpecialties);
+
 export const SpecialtiesRoutes = router;
