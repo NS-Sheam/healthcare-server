@@ -7,6 +7,7 @@ import { Request } from "express";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { userSearchableFields } from "./user.const";
+import { IAuthUser } from "../../interfaces/common";
 const createAdmin = async (req: Request): Promise<Admin> => {
   const file = req.file as IFile;
 
@@ -178,10 +179,10 @@ const changeProfileStatus = async (id: string, status: UserRole) => {
   return updateUser;
 };
 
-const getMyProfile = async (user) => {
+const getMyProfile = async (user: IAuthUser) => {
   const userInfo = await prisma.user.findUniqueOrThrow({
     where: {
-      email: user.email,
+      email: user?.email,
       status: UserStatus.ACTIVE,
     },
     select: {
@@ -224,10 +225,10 @@ const getMyProfile = async (user) => {
   };
 };
 
-const updateMyProfile = async (user: any, req: Request) => {
+const updateMyProfile = async (user: IAuthUser, req: Request) => {
   const userInfo = await prisma.user.findUniqueOrThrow({
     where: {
-      email: user.email,
+      email: user?.email,
       status: UserStatus.ACTIVE,
     },
   });
