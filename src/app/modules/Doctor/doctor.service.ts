@@ -156,7 +156,7 @@ const updateDoctor = async (id: string, payload: any) => {
 };
 
 const deleteFromDB = async (id: string): Promise<Doctor | null> => {
-  const d = await prisma.doctor.findUniqueOrThrow({
+  await prisma.doctor.findUniqueOrThrow({
     where: {
       id,
     },
