@@ -75,8 +75,25 @@ const getByIdFromDB = async (id: string) => {
 };
 
 const updatePatient = async (id: string, payload: any) => {
-  const { patientHealthData, ...patientData } = payload;
-  console.log(patientHealthData);
+  const { patientHealthData, medicalReport, ...patientData } = payload;
+  const patientInfo = await prisma.patient.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+
+  const result = await prisma.$transaction(async (transactionClient) => {
+    const updatedPatient = await transactionClient.patient.update({
+      where: {
+        id,
+      },
+      data: payload,
+      include: {
+        patientHealthData: true,
+        medicalReport: true,
+      },
+    });
+  });
 };
 
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
