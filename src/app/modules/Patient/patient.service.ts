@@ -106,7 +106,26 @@ const updatePatient = async (id: string, payload: any) => {
         },
       });
     }
+    // create or update medical report
+    if (medicalReport) {
+      const report = await transactionClient.medicalReport.create({
+        data: {
+          ...medicalReport,
+          patientId: id,
+        },
+      });
+    }
   });
+  const responseResult = await prisma.patient.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      patientHealthData: true,
+      medicalReport: true,
+    },
+  });
+  return responseResult;
 };
 
 const deleteFromDB = async (id: string): Promise<Patient | null> => {
