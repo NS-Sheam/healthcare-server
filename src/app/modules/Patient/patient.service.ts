@@ -87,12 +87,25 @@ const updatePatient = async (id: string, payload: any) => {
       where: {
         id,
       },
-      data: payload,
+      data: patientData,
       include: {
         patientHealthData: true,
         medicalReport: true,
       },
     });
+    // create or update patient health data
+    if (patientHealthData) {
+      const healthData = await transactionClient.patientHealthData.upsert({
+        where: {
+          patientId: id,
+        },
+        update: patientHealthData,
+        create: {
+          ...patientHealthData,
+          patientId: id,
+        },
+      });
+    }
   });
 };
 
