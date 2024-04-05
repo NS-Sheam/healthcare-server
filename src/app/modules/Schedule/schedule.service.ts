@@ -4,6 +4,7 @@ import { Prisma, Schedule } from "@prisma/client";
 import { ISchedule } from "./schedule.interface";
 import { IPaginationOptions } from "../../interfaces/pagination";
 import { paginationHelper } from "../../../helpers/paginationHelper";
+import { IAuthUser } from "../../interfaces/common";
 const insertScheduleIntoDB = async (payload: ISchedule): Promise<Schedule[]> => {
   const { startDate, endDate, startTime, endTime } = payload;
   const intervelTime = 30;
@@ -51,7 +52,7 @@ const insertScheduleIntoDB = async (payload: ISchedule): Promise<Schedule[]> => 
   return schedules;
 };
 
-const getAllSchedules = async (param: any, options: IPaginationOptions) => {
+const getAllSchedules = async (param: any, options: IPaginationOptions, user: IAuthUser) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { startDate, endDate, ...filteredData } = param;
 
@@ -83,6 +84,15 @@ const getAllSchedules = async (param: any, options: IPaginationOptions) => {
   }
 
   const whereCondition: Prisma.ScheduleWhereInput = { AND: andCondition };
+
+  const doctorSchedules = await prisma.doctorSchedules.findMany({
+    where: {
+      doctor: {
+        email: user?.email,
+      },
+    },
+  });
+  console.log(doctorSchedules);
 
   const result = await prisma.schedule.findMany({
     where: whereCondition,
