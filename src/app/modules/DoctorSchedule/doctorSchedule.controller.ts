@@ -2,8 +2,9 @@ import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import { DoctorScheduleService } from "./doctorSchedule.service";
 import sendResponse from "../../../shared/sendResponse";
+import { IAuthUser } from "../../interfaces/common";
 
-const insertIntoDB = catchAsync(async (req: Request, res: Response) => {
+const insertIntoDB = catchAsync(async (req: Request & { user?: IAuthUser }, res: Response) => {
   const result = await DoctorScheduleService.insertIntoDB(req.user, req.body);
   sendResponse(res, {
     status: 200,
