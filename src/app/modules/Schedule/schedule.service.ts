@@ -53,10 +53,25 @@ const insertScheduleIntoDB = async (payload: ISchedule): Promise<Schedule[]> => 
 
 const getAllSchedules = async (param: any, options: IPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filteredData } = param;
+  const { startDate, endDate, ...filteredData } = param;
 
   const andCondition: Prisma.ScheduleWhereInput[] = [];
-
+  if (startDate && endDate) {
+    andCondition.push({
+      AND: [
+        {
+          startDateTime: {
+            gte: new Date(startDate),
+          },
+        },
+        {
+          endDateTime: {
+            lte: new Date(endDate),
+          },
+        },
+      ],
+    });
+  }
   if (Object.keys(filteredData).length > 0) {
     andCondition.push({
       AND: Object.keys(filteredData).map((key) => ({

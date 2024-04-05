@@ -14,7 +14,7 @@ const insertScheduleIntoDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getAllSchedules = catchAsync(async (req: Request, res: Response) => {
-  const filter = pick(req.query, ["startDateTime", "endDateTime"]);
+  const filter = pick(req.query, ["startDate", "endDate"]);
 
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
