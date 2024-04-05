@@ -6,12 +6,22 @@ const insertIntoDB = async (
     scheduleIds: string[];
   }
 ) => {
-  const doctorData = await prisma.doctor.findUnique({
+  const doctorData = await prisma.doctor.findUniqueOrThrow({
     where: {
       email: user.email,
     },
   });
-  console.log(payload);
+
+  const doctorScheduleData = payload.scheduleIds.map((scheduleId) => ({
+    doctorId: doctorData.id,
+    scheduleId,
+  }));
+
+  const result = prisma.doctorSchedules.createMany({
+    data: doctorScheduleData,
+  });
+
+  return result;
 };
 
 export const DoctorScheduleService = {
