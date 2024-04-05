@@ -8,8 +8,18 @@ const insertScheduleIntoDB = async (payload: any) => {
   const currentDate = new Date(startDate); // Start Date
   const lastDate = new Date(endDate); // End Date
   while (currentDate <= lastDate) {
-    const startDateTime = new Date(addHours(`${format(currentDate, "yyyy-MM-dd")}`, Number(startTime.split(":")[0])));
-    const endDateTime = new Date(addHours(`${format(currentDate, "yyyy-MM-dd")}`, Number(endTime.split(":")[0])));
+    const startDateTime = new Date(
+      addMinutes(
+        addHours(`${format(currentDate, "yyyy-MM-dd")}`, Number(startTime.split(":")[0])),
+        Number(startTime.split(":")[1])
+      )
+    );
+    const endDateTime = new Date(
+      addMinutes(
+        addHours(`${format(currentDate, "yyyy-MM-dd")}`, Number(endTime.split(":")[0])),
+        Number(endTime.split(":")[1])
+      )
+    );
 
     while (startDateTime < endDateTime) {
       const scheduleData = {
