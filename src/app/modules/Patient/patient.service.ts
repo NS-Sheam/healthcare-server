@@ -48,6 +48,10 @@ const getAllPatientFromDB = async (param: IPatientFilterRequest, options: IPagin
         : {
             createdAt: "desc",
           },
+    include: {
+      medicalReport: true,
+      patientHealthData: true,
+    },
   });
 
   const total = await prisma.patient.count({
