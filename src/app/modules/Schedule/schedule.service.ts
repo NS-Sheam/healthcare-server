@@ -1,6 +1,8 @@
 import { addHours, addMinutes, format } from "date-fns";
 import prisma from "../../../shared/prisma";
-const insertScheduleIntoDB = async (payload: any) => {
+import { Schedule } from "@prisma/client";
+import { ISchedule } from "./schedule.interface";
+const insertScheduleIntoDB = async (payload: ISchedule): Promise<Schedule[]> => {
   const { startDate, endDate, startTime, endTime } = payload;
   const intervelTime = 30;
   const schedules = [];
@@ -26,10 +28,20 @@ const insertScheduleIntoDB = async (payload: any) => {
         startDateTime: startDateTime,
         endDateTime: addMinutes(startDateTime, intervelTime),
       };
-      const result = await prisma.schedule.create({
-        data: scheduleData,
+
+      const existingSchedule = await prisma.schedule.findFirst({
+        where: {
+          startDateTime: scheduleData.startDateTime,
+          endDateTime: scheduleData.endDateTime,
+        },
       });
-      schedules.push(result);
+      if (!existingSchedule) {
+        const result = await prisma.schedule.create({
+          data: scheduleData,
+        });
+        schedules.push(result);
+      }
+
       startDateTime.setMinutes(startDateTime.getMinutes() + intervelTime);
     }
     currentDate.setDate(currentDate.getDate() + 1);
