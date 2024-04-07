@@ -5,9 +5,9 @@ import { IPaginationOptions } from "../../interfaces/pagination";
 import { IDoctorFilterRequest } from "./doctor.interface";
 import { doctorSearchableFields } from "./doctor.const";
 
-const getAllDoctorFromDB = async (param: IDoctorFilterRequest, options: IPaginationOptions) => {
+const getAllDoctorFromDB = async (filters: IDoctorFilterRequest, options: IPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, specialties, ...filteredData } = param;
+  const { searchTerm, specialties, ...filteredData } = filters;
 
   const andCondition: Prisma.DoctorWhereInput[] = [];
 
