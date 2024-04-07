@@ -114,7 +114,7 @@ const updateDoctor = async (id: string, payload: any) => {
     if (specialties && specialties.length > 0) {
       // delete specialties
 
-      const deleteSpecialtiesIds = specialties.filter((speciality) => speciality.isDeleted);
+      const deleteSpecialtiesIds = specialties.filter((speciality: any) => speciality.isDeleted);
 
       for (const speciality of deleteSpecialtiesIds) {
         const deletes = await transactionClient.doctorSpecialties.deleteMany({
@@ -126,7 +126,7 @@ const updateDoctor = async (id: string, payload: any) => {
       }
 
       // add specialties
-      const createSpecialtiesIds = specialties.filter((speciality) => !speciality.isDeleted);
+      const createSpecialtiesIds = specialties.filter((speciality: any) => !speciality.isDeleted);
 
       for (const speciality of createSpecialtiesIds) {
         await transactionClient.doctorSpecialties.create({
