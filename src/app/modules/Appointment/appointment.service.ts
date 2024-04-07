@@ -56,7 +56,7 @@ const createAppointment = async (user: IAuthUser, payload: any) => {
       "-" +
       (today.getMonth() + 1) +
       "-" +
-      today.getDate() +
+      today.getDay() +
       "-" +
       today.getHours() +
       "-" +
