@@ -8,9 +8,9 @@ const initPayment = async () => {
     total_amount: 100,
     currency: "BDT",
     tran_id: "REF123", // use unique tran_id for each api call
-    success_url: "http://localhost:3030/success",
-    fail_url: "http://localhost:3030/fail",
-    cancel_url: "http://localhost:3030/cancel",
+    success_url: config.payment.sslc_success_url,
+    fail_url: config.payment.sslc_fail_url,
+    cancel_url: config.payment.sslc_cancel_url,
     ipn_url: "http://localhost:3030/ipn",
     shipping_method: "Courier",
     product_name: "Computer.",
@@ -37,7 +37,7 @@ const initPayment = async () => {
 
   const response = await axios({
     method: "post",
-    url: "https://sandbox.sslcommerz.com/gwprocess/v3/api.php",
+    url: config.payment.ssl_payment_api,
     data,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
