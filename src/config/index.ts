@@ -28,9 +28,9 @@ export default {
     sslc_store_id: process.env.SSLC_STORE_ID,
     sslc_store_password: process.env.SSLC_STORE_PASSWORD,
     sslc_success_url: process.env.SSLC_SUCCESS_URL,
-    sslc_fail_url: process.env.SSLC_FAIL_URL,
+    sslc_fail_url: process.env.SSLC_FAILURE_URL,
     sslc_cancel_url: process.env.SSLC_CANCEL_URL,
-    ssl_payment_api: process.env.SSL_PAYMENT_API,
-    ssl_validation_api: process.env.SSL_VALIDATION_API,
+    sslc_payment_api: process.env.SSLC_PAYMENT_API,
+    sslc_validation_api: process.env.SSLC_VALIDATION_API,
   },
 };
