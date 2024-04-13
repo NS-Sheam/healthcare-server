@@ -1,5 +1,5 @@
 import config from "../../../config";
-import SSLCommerzPayment from "sslcommerz-lts";
+import axios from "axios";
 
 const initPayment = async () => {
   const data = {
@@ -35,13 +35,15 @@ const initPayment = async () => {
     ship_country: "Bangladesh",
   };
 
-  const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
-  sslcz.init(data).then((apiResponse) => {
-    // Redirect the user to payment gateway
-    let GatewayPageURL = apiResponse.GatewayPageURL;
-    res.redirect(GatewayPageURL);
-    console.log("Redirecting to: ", GatewayPageURL);
+  const response = await axios({
+    method: "post",
+    url: "https://sandbox.sslcommerz.com/gwprocess/v3/api.php",
+    data,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
   });
+  console.log(response.data);
 };
 
 export const PaymentService = {
