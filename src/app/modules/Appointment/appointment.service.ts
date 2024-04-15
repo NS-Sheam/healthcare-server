@@ -140,8 +140,9 @@ const getMyAppointment = async (user: IAuthUser, filters: any, options: IPaginat
     };
   }
 };
-
+const changeAppointmentStatus = async () => {};
 export const AppointmentService = {
   createAppointment,
   getMyAppointment,
+  changeAppointmentStatus,
 };
