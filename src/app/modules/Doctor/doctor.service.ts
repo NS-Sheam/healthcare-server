@@ -60,7 +60,7 @@ const getAllDoctorFromDB = async (filters: IDoctorFilterRequest, options: IPagin
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: "desc",
+            averageRating: "desc",
           },
     include: {
       doctorSpecialties: {
