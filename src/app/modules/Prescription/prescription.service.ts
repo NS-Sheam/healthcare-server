@@ -1,4 +1,4 @@
-import { AppointmentStatus, PaymentStatus, Prescription } from "@prisma/client";
+import { AppointmentStatus, PaymentStatus, Prescription, Prisma } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { IAuthUser } from "../../interfaces/common";
 import { IPaginationOptions } from "../../interfaces/pagination";
@@ -69,8 +69,58 @@ const patientPrescription = async (user: IAuthUser, options: IPaginationOptions)
     data: result,
   };
 };
+const getAllPrescription = async (filters: any, options: IPaginationOptions) => {
+  const { limit, page, skip } = paginationHelper.calculatePagination(options);
+  const { searchTerm, ...filteredData } = filters;
+  const andCondition: Prisma.PrescriptionWhereInput[] = [];
+
+  if (searchTerm) {
+    andCondition.push({
+      OR: ["instructions"].map((key) => ({
+        [key]: {
+          contains: searchTerm,
+          mode: "insensitive",
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filteredData).length > 0) {
+    andCondition.push({
+      AND: Object.keys(filteredData).map((key) => ({
+        [key]: {
+          equals: (filteredData as any)[key],
+        },
+      })),
+    });
+  }
+  const whereCondition: Prisma.PrescriptionWhereInput = { AND: andCondition };
+
+  const result = await prisma.prescription.findMany({
+    where: whereCondition,
+    skip,
+    take: limit,
+    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: "desc" },
+    include: {
+      patient: true,
+      doctor: true,
+    },
+  });
+  const total = await prisma.prescription.count({
+    where: whereCondition,
+  });
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+    },
+    data: result,
+  };
+};
 
 export const PrescriptionService = {
   insertIntoDB,
   patientPrescription,
+  getAllPrescription,
 };

@@ -30,7 +30,21 @@ const patientPrescription = catchAsync(async (req: Request & { user?: IAuthUser 
   });
 });
 
+const getAllPrescription = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, ["searchTerm"]);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+  const result = await PrescriptionService.getAllPrescription(filters, options);
+  sendResponse(res, {
+    status: httpStatus.OK,
+    success: true,
+    message: "Prescription fetched successfully",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const PrescriptionController = {
   insertIntoDB,
   patientPrescription,
+  getAllPrescription,
 };
