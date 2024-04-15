@@ -18,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 cron.schedule("* * * * *", () => {
   try {
     AppointmentService.cancelUnpaidAppointments();
-    console.log("running a task every minute");
   } catch (error) {
     console.error(error);
   }
