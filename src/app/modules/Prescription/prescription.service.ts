@@ -69,46 +69,49 @@ const patientPrescription = async (user: IAuthUser, options: IPaginationOptions)
     data: result,
   };
 };
-const getAllPrescription = async (filters: any, options: IPaginationOptions) => {
+const getAllFromDB = async (filters: any, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filteredData } = filters;
-  const andCondition: Prisma.PrescriptionWhereInput[] = [];
+  const { patientEmail, doctorEmail } = filters;
+  const andConditions = [];
 
-  if (searchTerm) {
-    andCondition.push({
-      OR: ["instructions"].map((key) => ({
-        [key]: {
-          contains: searchTerm,
-          mode: "insensitive",
-        },
-      })),
+  if (patientEmail) {
+    andConditions.push({
+      patient: {
+        email: patientEmail,
+      },
     });
   }
 
-  if (Object.keys(filteredData).length > 0) {
-    andCondition.push({
-      AND: Object.keys(filteredData).map((key) => ({
-        [key]: {
-          equals: (filteredData as any)[key],
-        },
-      })),
+  if (doctorEmail) {
+    andConditions.push({
+      doctor: {
+        email: doctorEmail,
+      },
     });
   }
-  const whereCondition: Prisma.PrescriptionWhereInput = { AND: andCondition };
+
+  const whereConditions: Prisma.PrescriptionWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.prescription.findMany({
-    where: whereCondition,
+    where: whereConditions,
     skip,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: "desc" },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: "desc",
+          },
     include: {
-      patient: true,
       doctor: true,
+      patient: true,
+      appointment: true,
     },
   });
   const total = await prisma.prescription.count({
-    where: whereCondition,
+    where: whereConditions,
   });
+
   return {
     meta: {
       total,
@@ -122,5 +125,5 @@ const getAllPrescription = async (filters: any, options: IPaginationOptions) => 
 export const PrescriptionService = {
   insertIntoDB,
   patientPrescription,
-  getAllPrescription,
+  getAllFromDB,
 };
