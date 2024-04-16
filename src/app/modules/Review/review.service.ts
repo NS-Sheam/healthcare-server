@@ -55,35 +55,49 @@ const insertIntoDB = async (user: IAuthUser, payload: any) => {
   });
 };
 
-const getAllReviews = async (filters: any, options: IPaginationOptions) => {
+const getAllFromDB = async (filters: any, options: IPaginationOptions) => {
   const { limit, page, skip } = paginationHelper.calculatePagination(options);
+  const { patientEmail, doctorEmail } = filters;
+  const andConditions = [];
 
-  const andCondition: Prisma.ReviewWhereInput[] = [];
-
-  if (Object.keys(filters).length > 0) {
-    andCondition.push({
-      AND: Object.keys(filters).map((key) => ({
-        [key]: {
-          equals: key === "rating" ? Number(filters[key]) : filters[key],
-        },
-      })),
+  if (patientEmail) {
+    andConditions.push({
+      patient: {
+        email: patientEmail,
+      },
     });
   }
-  const whereCondition: Prisma.ReviewWhereInput = { AND: andCondition };
+
+  if (doctorEmail) {
+    andConditions.push({
+      doctor: {
+        email: doctorEmail,
+      },
+    });
+  }
+
+  const whereConditions: Prisma.ReviewWhereInput = andConditions.length > 0 ? { AND: andConditions } : {};
 
   const result = await prisma.review.findMany({
-    where: whereCondition,
+    where: whereConditions,
     skip,
     take: limit,
-    orderBy: options.sortBy && options.sortOrder ? { [options.sortBy]: options.sortOrder } : { createdAt: "desc" },
+    orderBy:
+      options.sortBy && options.sortOrder
+        ? { [options.sortBy]: options.sortOrder }
+        : {
+            createdAt: "desc",
+          },
     include: {
-      patient: true,
       doctor: true,
+      patient: true,
+      //appointment: true,
     },
   });
   const total = await prisma.review.count({
-    where: whereCondition,
+    where: whereConditions,
   });
+
   return {
     meta: {
       total,
@@ -93,8 +107,7 @@ const getAllReviews = async (filters: any, options: IPaginationOptions) => {
     data: result,
   };
 };
-
 export const ReviewService = {
   insertIntoDB,
-  getAllReviews,
+  getAllFromDB,
 };
